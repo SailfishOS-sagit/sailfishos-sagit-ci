@@ -20,7 +20,7 @@ jobs:
     env:
       DEVICE: vince
       VENDOR: xiaomi
-      ANDROID_ROOT: /home/runner/hadk_14.1/
+      ANDROID_ROOT: /home/runner/work/hadk_14.1/
 
     steps:
     - name: Checkout
@@ -80,7 +80,7 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: hybris-boot.img
-        path: /home/runner/hadk_14.1/out/target/product/vince/hybris-boot.img
+        path: /home/runner/work/hadk_14.1/out/target/product/vince/hybris-boot.img
 
   build-mer:
     needs: build-hal
@@ -90,14 +90,19 @@ jobs:
     env:
       DEVICE: vince
       VENDOR: xiaomi
-      ANDROID_ROOT: /home/runner/hadk_14.1/
+      ANDROID_ROOT: /home/runner/work/hadk_14.1/
 
     steps:
     - name: Checkout
-      uses: actions/checkout@master
-      
+#       uses: actions/checkout@master
+      run: |
+        git clone https://github.com/Sailfish-On-Vince/ci
+        cp ci/build-rpm.sh /home/runner/work/hadk_14.1/
+        cp ci/hadk.env /home/runner/work/hadk_14.1/
+
     - name: Build dhd in container
       run: |
+        cd ${{ANDROID_ROOT}}
         chmod +x build-rpm.sh
         bash -x build-rpm.sh
       shell: bash
@@ -106,4 +111,4 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: Mer packages
-        path: /home/runner/hadk_14.1/droid-local-repo.zip
+        path: /home/runner/work/hadk_14.1/droid-local-repo.zip
