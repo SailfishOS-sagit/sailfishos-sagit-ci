@@ -47,14 +47,14 @@ jobs:
         git config --global user.name "BirdZhang"
         git config --global user.email "0312birdzhang@gmail.com"
 
-    - uses: actions/cache@v1
-      id: cache
-      with:
-        path: ${{env.ANDROID_ROOT}}
-        key: ${{ runner.os }}-${{ hashFiles('${{env.ANDROID_ROOT}}/build/core/main.mk') }}
+    # - uses: actions/cache@v1
+    #   id: cache
+    #   with:
+    #     path: ${{env.ANDROID_ROOT}}
+    #     key: ${{ runner.os }}-${{ hashFiles('~/.syncfinished') }}
 
     - name: Downloading source code
-      if: steps.cache.outputs.cache-hit != 'true'
+      # if: steps.cache.outputs.cache-hit != 'true'
       run: |
         source hadk.env
         mkdir -p $ANDROID_ROOT
@@ -62,9 +62,10 @@ jobs:
         repo init -u git://github.com/mer-hybris/android.git -b hybris-14.1 --depth=1
         repo sync -j8 -c --no-clone-bundle --no-tags
         repo sync
-        echo "sync finished"
+        touch ~/.syncfinished
     
     - name: Clone device spec source
+      # if: steps.cache.outputs.cache-hit != 'true'
       run: |
         source hadk.env
         git clone https://github.com/Sailfish-On-Vince/device_xiaomi_vince.git $ANDROID_ROOT/device/xiaomi/vince --depth=1
