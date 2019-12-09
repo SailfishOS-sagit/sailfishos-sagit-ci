@@ -97,12 +97,12 @@ jobs:
 #       uses: actions/checkout@master
       run: |
         git clone https://github.com/Sailfish-On-Vince/ci
-        cp ci/build-rpm.sh /home/runner/work/hadk_14.1/
-        cp ci/hadk.env /home/runner/work/hadk_14.1/
+        cp ci/build-rpm.sh $ANDROID_ROOT
+        cp ci/hadk.env $ANDROID_ROOT
 
     - name: Build dhd in container
       run: |
-        cd ${{ANDROID_ROOT}}
+        cd $ANDROID_ROOT
         chmod +x build-rpm.sh
         bash -x build-rpm.sh
       shell: bash
