@@ -51,7 +51,7 @@ jobs:
       id: cache
       with:
         path: ${{env.ANDROID_ROOT}}
-        key: ${{ runner.os }}-${{ hashFiles('build/core/main.mk') }}
+        key: ${{ runner.os }}-${{ hashFiles('${{env.ANDROID_ROOT}}/build/core/main.mk') }}
 
     - name: Downloading source code
       if: steps.cache.outputs.cache-hit != 'true'
