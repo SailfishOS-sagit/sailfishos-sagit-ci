@@ -60,13 +60,16 @@ jobs:
         rm -rf hybris/hybris-boot
         git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris-hal/hybris-boot
 
-    - name: Building HAL
-      run: |
-        source hadk.env
-        cd $ANDROID_ROOT
-        source build/envsetup.sh
-        breakfast $DEVICE
-        make -j$(nproc) hybris-hal
+
+    - name: SSH connection to Actions
+      uses: P3TERX/debugger-action@master
+#     - name: Building HAL
+#       run: |
+#         source hadk.env
+#         cd $ANDROID_ROOT
+#         source build/envsetup.sh
+#         breakfast $DEVICE
+#         make -j$(nproc) hybris-hal
 
     - name : Upload packages
       uses: actions/upload-artifact@master
