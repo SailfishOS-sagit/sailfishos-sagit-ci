@@ -80,11 +80,9 @@ jobs:
 
     - name: Building HAL
       run: |
-        source hadk.env
-        cd $ANDROID_ROOT
-        source build/envsetup.sh
-        breakfast $DEVICE
-        make -j$(nproc) hybris-hal V=s
+        chmod +x build.sh
+        bash -x build.sh
+      shell: bash
 
     - name : Upload boot image
       uses: actions/upload-artifact@master
