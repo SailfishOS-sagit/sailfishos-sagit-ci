@@ -62,7 +62,7 @@ jobs:
         repo init -u git://github.com/mer-hybris/android.git -b hybris-14.1 --depth=1
         repo sync -j8 -c --no-clone-bundle --no-tags
         repo sync
-        touch ~/.syncfinished
+        # touch ~/.syncfinished
     
     - name: Clone device spec source
       # if: steps.cache.outputs.cache-hit != 'true'
@@ -72,7 +72,7 @@ jobs:
         git clone https://github.com/Sailfish-On-Vince/vendor_xiaomi_vince.git $ANDROID_ROOT/vendor/xiaomi/vince --depth=1
         git clone https://github.com/Sailfish-On-Vince/Xiaomi_Kernel_OpenSource.git $ANDROID_ROOT/kernel/xiaomi/msm8953 --depth=1
         rm -rf $ANDROID_ROOT/hybris/hybris-boot
-        git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris-hal/hybris-boot
+        git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris/hybris-boot
 
 
     # - name: SSH connection to Actions
