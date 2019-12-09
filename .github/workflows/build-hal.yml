@@ -60,9 +60,9 @@ jobs:
 
     - name: Building HAL
       run: |
+        source hadk.env
         cd $ANDROID_ROOT
         echo -e "$(nproc) thread build."
-        source hadk.env
         source build/envsetup.sh
         export USE_CCACHE=1
         breakfast vince
