@@ -38,7 +38,7 @@ jobs:
         mkdir -p ~/bin
         wget 'https://storage.googleapis.com/git-repo-downloads/repo' -P ~/bin
         chmod +x ~/bin/repo
-        git config --global user.name "BirdZhang" && \
+        git config --global user.name "BirdZhang"
         git config --global user.email "0312birdzhang@gmail.com"
 
     - name: Downloading source code
@@ -48,6 +48,8 @@ jobs:
         cd $ANDROID_ROOT
         repo init -u git://github.com/mer-hybris/android.git -b hybris-14.1 --depth=1
         repo sync -j8 -c --no-clone-bundle --no-tags
+        repo sync
+        echo "sync finished"
     
     - name: Clone device spec source
       run: |
@@ -58,15 +60,16 @@ jobs:
         rm -rf hybris/hybris-boot
         git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris-hal/hybris-boot
 
-    - name: Building HAL
-      run: |
-        source hadk.env
-        cd $ANDROID_ROOT
-        echo -e "$(nproc) thread build."
-        source build/envsetup.sh
-        export USE_CCACHE=1
-        breakfast vince
-        make -j$(nproc) hybris-hal
+
+    - name: SSH connection to Actions
+      uses: P3TERX/debugger-action@master
+#     - name: Building HAL
+#       run: |
+#         source hadk.env
+#         cd $ANDROID_ROOT
+#         source build/envsetup.sh
+#         breakfast $DEVICE
+#         make -j$(nproc) hybris-hal
 
     - name : Upload packages
       uses: actions/upload-artifact@master
