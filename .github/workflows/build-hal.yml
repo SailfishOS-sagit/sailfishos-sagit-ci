@@ -17,6 +17,11 @@ jobs:
   build:
     runs-on: ubuntu-16.04
 
+    env:
+      DEVICE: vince
+      VENDOR: xiaomi
+      ANDROID_ROOT: /home/runner/hadk_14.1/
+
     steps:
     - name: Checkout
       uses: actions/checkout@master
@@ -33,6 +38,7 @@ jobs:
         libxml2 libxml2-utils lzop pngcrush rsync schedtool \
         squashfs-tools xsltproc yasm zip zlib1g-dev git
 
+
     - name: Initialization repo
       run: |
         mkdir -p ~/bin
@@ -41,7 +47,14 @@ jobs:
         git config --global user.name "BirdZhang"
         git config --global user.email "0312birdzhang@gmail.com"
 
+    - uses: actions/cache@v1
+      id: cache
+      with:
+        path: ${{env.ANDROID_ROOT}}
+        key: ${{ runner.os }}-${{ hashFiles('build/core/main.mk') }}
+
     - name: Downloading source code
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         source hadk.env
         mkdir -p $ANDROID_ROOT
@@ -57,22 +70,23 @@ jobs:
         git clone https://github.com/Sailfish-On-Vince/device_xiaomi_vince.git $ANDROID_ROOT/device/xiaomi/vince --depth=1
         git clone https://github.com/Sailfish-On-Vince/vendor_xiaomi_vince.git $ANDROID_ROOT/vendor/xiaomi/vince --depth=1
         git clone https://github.com/Sailfish-On-Vince/Xiaomi_Kernel_OpenSource.git $ANDROID_ROOT/kernel/xiaomi/msm8953 --depth=1
-        rm -rf hybris/hybris-boot
+        rm -rf $ANDROID_ROOT/hybris/hybris-boot
         git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris-hal/hybris-boot
 
 
-    - name: SSH connection to Actions
-      uses: P3TERX/debugger-action@master
-#     - name: Building HAL
-#       run: |
-#         source hadk.env
-#         cd $ANDROID_ROOT
-#         source build/envsetup.sh
-#         breakfast $DEVICE
-#         make -j$(nproc) hybris-hal
+    # - name: SSH connection to Actions
+    #   uses: P3TERX/debugger-action@master
 
-    - name : Upload packages
+    - name: Building HAL
+      run: |
+        source hadk.env
+        cd $ANDROID_ROOT
+        source build/envsetup.sh
+        breakfast $DEVICE
+        make -j$(nproc) hybris-hal V=s
+
+    - name : Upload boot image
       uses: actions/upload-artifact@master
       with:
         name: Hybris boot
-        path: ~/hadk_14.1/out/target/product/vince/hybris-boot.img
+        path: /home/runner/hadk_14.1/out/target/product/vince/hybris-boot.img
