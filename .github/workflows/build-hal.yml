@@ -1,0 +1,75 @@
+#=================================================
+# Description: Build Android HAL using GitHub Actions
+# Lisence: MIT
+# Author: 0312birdzhang
+#=================================================
+
+name: Build Android HAL
+
+on: 
+  release:
+    types: [published]
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-16.04
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
+    
+    - name: Initialization environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+        openjdk-8-jdk android-tools-adb bc \
+        bison build-essential curl flex g++-multilib \
+        gcc-multilib gnupg gperf imagemagick lib32ncurses5-dev \
+        lib32readline-dev lib32z1-dev libesd0-dev liblz4-tool \
+        libncurses5-dev libsdl1.2-dev libssl-dev libwxgtk3.0-dev \
+        libxml2 libxml2-utils lzop pngcrush rsync schedtool \
+        squashfs-tools xsltproc yasm zip zlib1g-dev git
+
+    - name: Initialization repo
+      run: |
+        mkdir -p ~/bin
+        wget 'https://storage.googleapis.com/git-repo-downloads/repo' -P ~/bin
+        chmod +x ~/bin/repo
+        git config --global user.name "BirdZhang" && \
+        git config --global user.email "0312birdzhang@gmail.com"
+
+    - name: Downloading source code
+      run: |
+        source hadk.env
+        mkdir -p $ANDROID_ROOT
+        cd $ANDROID_ROOT
+        repo init -u git://github.com/mer-hybris/android.git -b hybris-14.1 --depth=1
+        repo sync -j8 -c --no-clone-bundle --no-tags
+    
+    - name: Clone device spec source
+      run: |
+        source hadk.env
+        git clone https://github.com/Sailfish-On-Vince/device_xiaomi_vince.git $ANDROID_ROOT/device/xiaomi/vince --depth=1
+        git clone https://github.com/Sailfish-On-Vince/vendor_xiaomi_vince.git $ANDROID_ROOT/vendor/xiaomi/vince --depth=1
+        git clone https://github.com/Sailfish-On-Vince/Xiaomi_Kernel_OpenSource.git $ANDROID_ROOT/kernel/xiaomi/msm8953 --depth=1
+        rm -rf hybris/hybris-boot
+        git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris-hal/hybris-boot
+
+    - name: Building HAL
+      run: |
+        cd $ANDROID_ROOT
+        echo -e "$(nproc) thread build."
+        source hadk.env
+        source build/envsetup.sh
+        export USE_CCACHE=1
+        breakfast vince
+        make -j$(nproc) hybris-hal
+
+    - name : Upload packages
+      uses: actions/upload-artifact@master
+      with:
+        name: Hybris boot
+        path: ~/hadk_14.1/out/target/product/vince/hybris-boot.img
