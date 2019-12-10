@@ -1,24 +1,17 @@
 #!/bin/bash
-source hadk.env
+source /home/nemo/work/ci/ci/hadk.env
 
 mkdir -p $ANDROID_ROOT
 cd $ANDROID_ROOT
 
-export PLATFORM_SDK_ROOT=/srv/mer
-curl -k -O http://releases.sailfishos.org/sdk/installers/latest/Jolla-latest-SailfishOS_Platform_SDK_Chroot-i486.tar.bz2
-sudo mkdir -p $PLATFORM_SDK_ROOT/sdks/sfossdk
-sudo tar --numeric-owner -p -xjf Jolla-latest-SailfishOS_Platform_SDK_Chroot-i486.tar.bz2 -C $PLATFORM_SDK_ROOT/sdks/sfossdk
-echo "export PLATFORM_SDK_ROOT=$PLATFORM_SDK_ROOT" >> ~/.bashrc
-echo 'alias sfossdk=$PLATFORM_SDK_ROOT/sdks/sfossdk/mer-sdk-chroot' >> ~/.bashrc
-source ~/.bashrc
-echo 'PS1="PlatformSDK $PS1"' > ~/.mersdk.profile
-echo '[ -d /etc/bash_completion.d ] && for i in /etc/bash_completion.d/*;do . $i;done'  >> ~/.mersdk.profile
-sfossdk
-echo "Entered sfossdk, well done!"
-source ~/work/hadk.env
-cd $ANDROID_ROOT
-sdk-assistant create xiaomi-vince-latest http://releases.sailfishos.org/sdk/targets/Sailfish_OS-latest-Sailfish_SDK_Tooling-i486.tar.7z -y
-sdk-assistant create xiaomi-vince-armv7hl http://releases.sailfishos.org/sdk/targets/Sailfish_OS-latest-Sailfish_SDK_Target-armv7hl.tar.7z -y
+cd ~/.scratchbox2
+cp -R SailfishOS-*-armv7hl $VENDOR-$DEVICE-$PORT_ARCH
+cd $VENDOR-$DEVICE-$PORT_ARCH
+sed -i 's/SailfishOS-3.1.0.11/xiaomi-vince/g' sb2.config 
+sudo ln -s /srv/mer/targets/SailfishOS-3.1.0.11-armv7hl /srv/mer/targets/xiaomi-vince-armv7hl
+sudo ln -s /srv/mer/toolings/SailfishOS-3.1.0.11 /srv/mer/toolings/xiaomi-vince
+
+sdk-assistant list
 
 rpm/dhd/helpers/build_packages.sh --droid-hal
 
