@@ -83,8 +83,9 @@ jobs:
 
     - name: Build dhd in container
       run: |
+        echo "clean more folders"
+        rm -rf $ANDROID_ROOT/prebuilts $ANDROID_ROOT/external/chromium* $ANDROID_ROOT/tools/external/gradle $ANDROID_ROOT/packages
         chmod +x build-rpm.sh
-        
         sudo docker images|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
         sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION
         sudo docker run coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION -v "/home/runner:/home/nemo" /home/nemo/work/ci/ci/build-rpm.sh
