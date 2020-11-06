@@ -22,7 +22,7 @@ jobs:
       DEVICE: vince
       VENDOR: xiaomi
       ANDROID_ROOT: /home/runner/work/hadk_14.1/
-      SAILFISH_VERSION： 3.3.0.16
+      SAILFISH_VERSION: 3.3.0.16
 
     steps:
     - name: Checkout
