@@ -3,5 +3,9 @@ source hadk.env
 cd $ANDROID_ROOT
 source build/envsetup.sh 2>&1
 breakfast $DEVICE
-make -j$(nproc) hybris-hal V=s
+
+echo "clean .repo folder"
+rm -rf $ANDROID_ROOT/.repo
+
+make -j$(nproc --all) hybris-hal
 make -j$(nproc --all) $(external/droidmedia/detect_build_targets.sh $PORT_ARCH $(gettargetarch))

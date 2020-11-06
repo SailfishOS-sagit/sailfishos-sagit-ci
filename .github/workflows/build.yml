@@ -73,6 +73,11 @@ jobs:
         bash build-hal.sh
       shell: bash
 
+    - name: Check free disk
+      if: failure()
+      run: |
+        df -h
+      shell: bash
 
     - name: Build dhd in container
       run: |
