@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -x
+
 source /home/nemo/work/ci/ci/hadk.env
 export ANDROID_ROOT=/home/nemo/work/hadk_14.1
 

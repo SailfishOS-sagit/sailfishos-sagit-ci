@@ -96,7 +96,7 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: hybris-boot.img
-        path: ${{env.ANDROID_ROOT}}/out/target/product/$DEVICE/hybris-boot.img
+        path: ${{env.ANDROID_ROOT}}/out/target/product/${{env.DEVICE}}/hybris-boot.img
 
     - name : Upload mer packages
       uses: actions/upload-artifact@master
