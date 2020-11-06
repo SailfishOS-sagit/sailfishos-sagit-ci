@@ -83,11 +83,6 @@ jobs:
         sudo docker run coderus/sailfishos-platform-sdk:$SAILFISH_VERSION -v "/home/runner:/home/nemo" /home/nemo/work/ci/ci/build-rpm.sh
       shell: bash
     
-
-    - name: SSH connection to Actions
-      if: failure()
-      uses: P3TERX/debugger-action@master
-
     - name : Upload boot image
       uses: actions/upload-artifact@master
       with:
