@@ -29,5 +29,3 @@ mv hybris/mw/droidmedia-$DROIDMEDIA_VERSION.tgz hybris/mw/droidmedia-localbuild
 rpm/dhd/helpers/build_packages.sh --build=hybris/mw/droidmedia-localbuild
 
 rpm/dhd/helpers/build_packages.sh --droid-hal
-
-zip -r droid-local-repo.zip droid-local-repo
