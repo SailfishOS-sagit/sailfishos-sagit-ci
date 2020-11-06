@@ -75,22 +75,23 @@ jobs:
         bash build-hal.sh
       shell: bash
 
+    - name: Build dhd in container
+      run: |
+        echo "clean more folders"
+        rm -rf $ANDROID_ROOT/prebuilts $ANDROID_ROOT/external/chromium* $ANDROID_ROOT/tools/external/gradle $ANDROID_ROOT/packages
+        rm -rf $ANDROID_ROOT/out/build-lineage_vince.ninja
+        chmod +x build-rpm.sh
+        sudo docker images|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
+        sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION
+        sudo docker run -it -v /home/runner/work:/home/nemo/work coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION /home/nemo/work/ci/ci/build-rpm.sh
+      shell: bash
+
     - name: Check free disk
       if: failure()
       run: |
         df -h
       shell: bash
 
-    - name: Build dhd in container
-      run: |
-        echo "clean more folders"
-        rm -rf $ANDROID_ROOT/prebuilts $ANDROID_ROOT/external/chromium* $ANDROID_ROOT/tools/external/gradle $ANDROID_ROOT/packages
-        chmod +x build-rpm.sh
-        sudo docker images|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
-        sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION
-        sudo docker run coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION -v "/home/runner:/home/nemo" /home/nemo/work/ci/ci/build-rpm.sh
-      shell: bash
-    
     - name : Upload boot image
       uses: actions/upload-artifact@master
       with:
