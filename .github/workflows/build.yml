@@ -22,7 +22,7 @@ jobs:
       DEVICE: vince
       VENDOR: xiaomi
       ANDROID_ROOT: /home/runner/work/hadk_14.1/
-      SAILFISH_VERSION: 3.3.0.16
+      SAILFISH_SKD_VERSION: 3.3.0.14
 
     steps:
     - name: Checkout
@@ -66,6 +66,8 @@ jobs:
         rm -rf $ANDROID_ROOT/hybris/hybris-boot
         git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris/hybris-boot
         git clone --recurse-submodules https://github.com/Sailfish-On-Vince/droid-hal-vince.git $ANDROID_ROOT/rpm 
+        rm -rf $ANDROID_ROOT/external/droidmedia
+        git clone https://github.com/sailfishos/droidmedia.git $ANDROID_ROOT/external/droidmedia
 
     - name: Build HAL
       run: |
@@ -84,8 +86,8 @@ jobs:
         chmod +x build-rpm.sh
         
         sudo docker images|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
-        sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_VERSION
-        sudo docker run coderus/sailfishos-platform-sdk:$SAILFISH_VERSION -v "/home/runner:/home/nemo" /home/nemo/work/ci/ci/build-rpm.sh
+        sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION
+        sudo docker run coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION -v "/home/runner:/home/nemo" /home/nemo/work/ci/ci/build-rpm.sh
       shell: bash
     
     - name : Upload boot image
@@ -98,4 +100,4 @@ jobs:
       uses: actions/upload-artifact@master
       with:
         name: Mer packages
-        path: $ANDROID_ROOT/droid-local-repo.zip
+        path: $ANDROID_ROOT/droid-local-repo
