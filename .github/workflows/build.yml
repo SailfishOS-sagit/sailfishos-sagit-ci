@@ -1,10 +1,10 @@
 #=================================================
-# Description: Build Android HAL using GitHub Actions
+# Description: Build Android HAL and dhd packages using GitHub Actions
 # Lisence: MIT
 # Author: 0312birdzhang
 #=================================================
 
-name: Build Android HAL
+name: Build SailfishOS dhd
 
 on: 
   release:
@@ -15,13 +15,14 @@ on:
 
 jobs:
 
-  build-hal:
+  build:
     runs-on: ubuntu-16.04
 
     env:
       DEVICE: vince
       VENDOR: xiaomi
       ANDROID_ROOT: /home/runner/work/hadk_14.1/
+      SAILFISH_VERSION： 3.3.0.16
 
     steps:
     - name: Checkout
@@ -55,7 +56,6 @@ jobs:
         cd $ANDROID_ROOT
         repo init -u git://github.com/mer-hybris/android.git -b hybris-14.1 --depth=1
         repo sync -j8 -c --no-clone-bundle --no-tags
-        repo sync
     
     - name: Clone device spec source
       run: |
@@ -65,20 +65,22 @@ jobs:
         git clone https://github.com/Sailfish-On-Vince/Xiaomi_Kernel_OpenSource.git $ANDROID_ROOT/kernel/xiaomi/msm8953 --depth=1
         rm -rf $ANDROID_ROOT/hybris/hybris-boot
         git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris/hybris-boot
-        git clone https://github.com/Sailfish-On-Vince/droid-hal-vince.git $ANDROID_ROOT/rpm
+        git clone --recurse-submodules https://github.com/Sailfish-On-Vince/droid-hal-vince.git $ANDROID_ROOT/rpm 
 
     - name: Build HAL
       run: |
-        chmod +x build.sh
-        bash -x build.sh
+        chmod +x build-hal.sh
+        bash build-hal.sh
       shell: bash
 
 
     - name: Build dhd in container
       run: |
         chmod +x build-rpm.sh
-        docker pull coderus/sailfishos-platform-sdk:3.1.0.11
-        docker run coderus/sailfishos-platform-sdk:3.1.0.11 -v "/home/runner:/home/nemo" /home/nemo/work/ci/ci/build-rpm.sh
+        
+        sudo docker images|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
+        sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_VERSION
+        sudo docker run coderus/sailfishos-platform-sdk:$SAILFISH_VERSION -v "/home/runner:/home/nemo" /home/nemo/work/ci/ci/build-rpm.sh
       shell: bash
     
 
