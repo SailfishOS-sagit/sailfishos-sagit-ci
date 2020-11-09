@@ -11,7 +11,7 @@ cd $ANDROID_ROOT
 cd ~/.scratchbox2
 cp -R SailfishOS-*-armv7hl $VENDOR-$DEVICE-$PORT_ARCH
 cd $VENDOR-$DEVICE-$PORT_ARCH
-sed -i 's/SailfishOS-$SAILFISH_VERSION/xiaomi-vince/g' sb2.config 
+sed -i "s/SailfishOS-$SAILFISH_VERSION/xiaomi-vince/g" sb2.config
 sudo ln -s /srv/mer/targets/SailfishOS-$SAILFISH_VERSION-armv7hl /srv/mer/targets/xiaomi-vince-armv7hl
 sudo ln -s /srv/mer/toolings/SailfishOS-$SAILFISH_VERSION /srv/mer/toolings/xiaomi-vince
 

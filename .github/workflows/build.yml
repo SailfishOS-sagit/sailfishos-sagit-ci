@@ -83,7 +83,7 @@ jobs:
         chmod +x build-rpm.sh
         sudo docker images|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
         sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION
-        sudo docker run -d --name mer -v /home/runner/work:/home/nemo/work coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION /home/nemo/work/ci/ci/build-rpm.sh
+        sudo docker run -d --name mer -v /home/runner/work:/home/nemo/work coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION /bin/sh /home/nemo/work/ci/ci/build-rpm.sh
       shell: bash
 
     - name: Check free disk
@@ -98,8 +98,8 @@ jobs:
         name: hybris-boot.img
         path: ${{env.ANDROID_ROOT}}/out/target/product/${{env.DEVICE}}/hybris-boot.img
 
-    - name : Upload mer packages
+    - name : Upload droid-local-repo
       uses: actions/upload-artifact@master
       with:
-        name: Mer packages
+        name: droid-local-repo
         path: ${{env.ANDROID_ROOT}}/droid-local-repo
