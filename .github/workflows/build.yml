@@ -66,6 +66,8 @@ jobs:
         rm -rf $ANDROID_ROOT/hybris/hybris-boot
         git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris/hybris-boot
         git clone --recurse-submodules https://github.com/Sailfish-On-Vince/droid-hal-vince.git $ANDROID_ROOT/rpm 
+        git clone --recurse-submodules https://github.com/Sailfish-On-Vince/droid-config-vince.git $ANDROID_ROOT/hybris/droid-configs
+        git clone --recurse-submodules https://github.com/Sailfish-On-Vince/droid-hal-version-vince.git $ANDROID_ROOT/hybris/droid-hal-version-vince
         rm -rf $ANDROID_ROOT/external/droidmedia
         git clone https://github.com/sailfishos/droidmedia.git $ANDROID_ROOT/external/droidmedia
 

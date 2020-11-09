@@ -15,6 +15,9 @@ sed -i "s/SailfishOS-$SAILFISH_VERSION/xiaomi-vince/g" sb2.config
 sudo ln -s /srv/mer/targets/SailfishOS-$SAILFISH_VERSION-armv7hl /srv/mer/targets/xiaomi-vince-armv7hl
 sudo ln -s /srv/mer/toolings/SailfishOS-$SAILFISH_VERSION /srv/mer/toolings/xiaomi-vince
 
+# 3.3.0.16 hack
+sb2 -t $VENDOR-$DEVICE-$PORT_ARCH -m sdk-install -R chmod 777 /boot
+
 sdk-assistant list
 
 cd $ANDROID_ROOT
