@@ -83,7 +83,7 @@ jobs:
         chmod +x build-rpm.sh
         sudo docker images|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
         sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION
-        sudo docker run -d --name mer -v /home/runner/work:/home/nemo/work coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION /bin/sh /home/nemo/work/ci/ci/build-rpm.sh
+        sudo docker run -v /home/runner/work:/home/nemo/work coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION /bin/sh /home/nemo/work/ci/ci/build-rpm.sh
       shell: bash
 
     - name: Check free disk
