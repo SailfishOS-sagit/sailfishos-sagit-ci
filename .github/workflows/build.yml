@@ -54,8 +54,8 @@ jobs:
         source hadk.env
         mkdir -p $ANDROID_ROOT
         cd $ANDROID_ROOT
-        repo init -u git://github.com/mer-hybris/android.git -b hybris-16.0 --depth=1 --no-repo-verify
-        repo sync -j8 -c --no-clone-bundle --no-tags
+        repo init -u git://github.com/SailfishOS-sagit/android -b hybris-16.0 --depth=1 --no-repo-verify
+        repo sync --fetch-submodules --force-sync -c --no-clone-bundle --no-tags
     
     - name: Clone device spec source
       run: |
