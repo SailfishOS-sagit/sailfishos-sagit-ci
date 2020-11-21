@@ -3,7 +3,7 @@
 set -x
 
 source /home/nemo/work/ci/ci/hadk.env
-export ANDROID_ROOT=/home/nemo/work/hadk_14.1
+export ANDROID_ROOT=/home/nemo/work/hadk_16.0
 
 sudo chown -R nemo:nemo $ANDROID_ROOT
 cd $ANDROID_ROOT
@@ -16,6 +16,7 @@ sudo ln -s /srv/mer/targets/SailfishOS-$SAILFISH_VERSION-$PORT_ARCH /srv/mer/tar
 sudo ln -s /srv/mer/toolings/SailfishOS-$SAILFISH_VERSION /srv/mer/toolings/$VENDOR-$DEVICE
 
 # 3.3.0.16 hack
+sudo zypper in kmod
 sb2 -t $VENDOR-$DEVICE-$PORT_ARCH -m sdk-install -R chmod 777 /boot
 
 sdk-assistant list
@@ -33,7 +34,12 @@ sed -ie "s/0.0.0/$DROIDMEDIA_VERSION/" \
 hybris/mw/droidmedia-localbuild/rpm/droidmedia.spec
 mv hybris/mw/droidmedia-$DROIDMEDIA_VERSION.tgz hybris/mw/droidmedia-localbuild
 rpm/dhd/helpers/build_packages.sh --build=hybris/mw/droidmedia-localbuild
+rpm/dhd/helpers/build_packages.sh --mw=https://git.sailfishos.org/mer-core/nfcd.git
+rpm/dhd/helpers/build_packages.sh --mw=https://github.com/mer-hybris/libnciplugin.git
+rpm/dhd/helpers/build_packages.sh --mw=https://github.com/mer-hybris/dummy_netd.git
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community --spec=rpm/droid-biometry-fp.spec --do-not-install
+rpm/dhd/helpers/build_packages.sh --build=hybris/mw/sailfish-fpd-community
 
 rpm/dhd/helpers/build_packages.sh --droid-hal
 
-cat /home/nemo/work/hadk_14.1/droid-hal-$DEVICE.log
+cat /home/nemo/work/hadk_16.0/droid-hal-$DEVICE.log

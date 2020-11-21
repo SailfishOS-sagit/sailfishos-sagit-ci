@@ -19,10 +19,10 @@ jobs:
     runs-on: ubuntu-16.04
 
     env:
-      DEVICE: vince
+      DEVICE: sagit
       VENDOR: xiaomi
-      ANDROID_ROOT: /home/runner/work/hadk_14.1/
-      SAILFISH_SKD_VERSION: 3.3.0.14
+      ANDROID_ROOT: /home/runner/work/hadk_16.0/
+      SAILFISH_SKD_VERSION: 3.3.0.16
 
     steps:
     - name: Checkout
@@ -46,28 +46,34 @@ jobs:
         mkdir -p ~/bin
         wget 'https://storage.googleapis.com/git-repo-downloads/repo' -P ~/bin
         chmod +x ~/bin/repo
-        git config --global user.name "BirdZhang"
-        git config --global user.email "0312birdzhang@gmail.com"
+        git config --global user.name "Verevka"
+        git config --global user.email "verevka86@gmail.com"
 
     - name: Downloading source code
       run: |
         source hadk.env
         mkdir -p $ANDROID_ROOT
         cd $ANDROID_ROOT
-        repo init -u git://github.com/mer-hybris/android.git -b hybris-14.1 --depth=1
+        repo init -u git://github.com/mer-hybris/android.git -b hybris-16.0 --depth=1 --no-repo-verify
         repo sync -j8 -c --no-clone-bundle --no-tags
     
     - name: Clone device spec source
       run: |
         source hadk.env
-        git clone https://github.com/Sailfish-On-Vince/device_xiaomi_vince.git $ANDROID_ROOT/device/xiaomi/vince --depth=1
-        git clone https://github.com/Sailfish-On-Vince/vendor_xiaomi_vince.git $ANDROID_ROOT/vendor/xiaomi/vince --depth=1
-        git clone https://github.com/Sailfish-On-Vince/Xiaomi_Kernel_OpenSource.git $ANDROID_ROOT/kernel/xiaomi/msm8953 --depth=1
+        git clone https://github.com/SailfishOS-sagit/android_device_xiaomi_sagit.git $ANDROID_ROOT/device/xiaomi/sagit -b lineage-16.0 --depth=1
+        git clone https://github.com/SailfishOS-sagit/android_device_xiaomi_msm8998-common.git $ANDROID_ROOT/device/xiaomi/msm8998-common -b hybris-16.0 --depth=1
+        git clone https://github.com/SailfishOS-sagit/android_kernel_xiaomi_msm8998.git $ANDROID_ROOT/kernel/xiaomi/msm8998 -b ubports --depth=1
         rm -rf $ANDROID_ROOT/hybris/hybris-boot
-        git clone https://github.com/Sailfish-On-Vince/hybris-boot.git $ANDROID_ROOT/hybris/hybris-boot
-        git clone --recurse-submodules https://github.com/Sailfish-On-Vince/droid-hal-vince.git $ANDROID_ROOT/rpm 
-        git clone --recurse-submodules https://github.com/Sailfish-On-Vince/droid-config-vince.git $ANDROID_ROOT/hybris/droid-configs
-        git clone --recurse-submodules https://github.com/Sailfish-On-Vince/droid-hal-version-vince.git $ANDROID_ROOT/hybris/droid-hal-version-vince
+        git clone https://github.com/SailfishOS-sagit/hybris-boot.git $ANDROID_ROOT/hybris/hybris-boot -b master
+        git clone https://github.com/SailfishOS-sagit/android_vendor_xiaomi.git $ANDROID_ROOT/vendor/xiaomi -b lineage-16.0
+        rm -rf $ANDROID_ROOT/vendor/lineage
+        git clone https://github.com/SailfishOS-sagit/android_vendor_lineage.git $ANDROID_ROOT/vendor/lineage -b lineage-16.0
+        git clone https://github.com/SailfishOS-sagit/hybris-installer.git $ANDROID_ROOT/hybris/hybris-installer -b master
+        git clone https://github.com/piggz/sailfish-fpd-community.git $ANDROID_ROOT/hybris/mw/sailfish-fpd-community -b master
+        git clone https://github.com/SailfishOS-sagit/erfanoabdi/fake_crypt.git $ANDROID_ROOT/external/fake_crypt -b master
+        git clone --recurse-submodules https://github.com/SailfishOS-sagit/droid-hal-sagit.git $ANDROID_ROOT/rpm -b 3.3.0.16
+        git clone --recurse-submodules https://github.com/SailfishOS-sagit/droid-config-sagit.git $ANDROID_ROOT/hybris/droid-configs -b 3.3.0.16
+        git clone --recurse-submodules https://github.com/SailfishOS-sagit/droid-hal-version-sagit.git $ANDROID_ROOT/hybris/droid-hal-version-sagit -b 3.3.0.16
         rm -rf $ANDROID_ROOT/external/droidmedia
         git clone https://github.com/sailfishos/droidmedia.git $ANDROID_ROOT/external/droidmedia
 
@@ -81,7 +87,8 @@ jobs:
       run: |
         echo "clean more folders"
         rm -rf $ANDROID_ROOT/prebuilts $ANDROID_ROOT/external/chromium* $ANDROID_ROOT/tools/external/gradle $ANDROID_ROOT/packages
-        rm -rf $ANDROID_ROOT/out/build-lineage_vince.ninja
+        rm -rf $ANDROID_ROOT/out/build-lineage_sagit.ninja || true
+        rm -rf $ANDROID_ROOT/out/soong
         chmod +x build-rpm.sh
         sudo docker images|grep -v REPOSITORY|awk '{print $3}'|xargs docker rmi
         sudo docker pull coderus/sailfishos-platform-sdk:$SAILFISH_SKD_VERSION
