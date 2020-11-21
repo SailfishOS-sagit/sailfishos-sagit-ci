@@ -107,8 +107,8 @@ jobs:
         name: hybris-boot.img
         path: ${{env.ANDROID_ROOT}}/out/target/product/${{env.DEVICE}}/hybris-boot.img
 
-    - name : Upload droid-local-repo
+    - name : Upload install zip arhive
       uses: actions/upload-artifact@master
       with:
-        name: droid-local-repo
-        path: ${{env.ANDROID_ROOT}}/droid-local-repo
+        name: sailfishos-3.3.0.16-sagit-Verevka.zip
+        path: ${{env.ANDROID_ROOT}}/SailfishOScommunity-release-3.3.0.16-sagit-Verevka/sailfishos-3.3.0.16-sagit-Verevka.zip
